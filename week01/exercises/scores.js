@@ -10,13 +10,15 @@ let NN = modifiedScores.findIndex( el => el >= 0 )
 
 console.log(NN);
 modifiedScores.splice(0, NN);
+modifiedScores.shift();
+modifiedScores.shift();
 
 let avg = 0;
 for (const val of modifiedScores)
     avg += val;
 avg = avg / modifiedScores.length;
 
-const addedArray = Array(NN).fill(Math.round(avg));
+const addedArray = Array(NN+2).fill(Math.round(avg));
 
 modifiedScores.splice(modifiedScores.length, 0, ...addedArray);
 
