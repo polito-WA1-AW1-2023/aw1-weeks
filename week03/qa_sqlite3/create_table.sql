@@ -1,0 +1,1 @@
+CREATE TABLE answers (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, respondent TEXT, score INTEGER, date DATE);
