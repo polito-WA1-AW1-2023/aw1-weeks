@@ -12,12 +12,13 @@ let now = dayjs();
 
 //let answers = [];
 
-function Answer(text, respondent, score, date) {
+function Answer(id, text, respondent, score, date) {
+  this.id = id;
   this.text = text;
   this.respondent = respondent;
   this.score = score;
   this.date = date;
-  this.str = function () { return `${this.text} (by ${this.respondent}) on ${this.date.format('YYYY-MM-DD')}, score: ${this.score}` }
+  this.str = function () { return `ID: ${this.id}, ${this.text} (by ${this.respondent}) on ${this.date.format('YYYY-MM-DD')}, score: ${this.score}` }
 }
 
 function Question(id, text, questioner, date) {
@@ -65,7 +66,7 @@ function Question(id, text, questioner, date) {
         if (err)
           reject(err);
         else {
-          const answers = rows.map(row => new Answer(row.text, row.respondent, row.score, dayjs(row.date)));
+          const answers = rows.map(row => new Answer(row.id, row.text, row.respondent, row.score, dayjs(row.date)));
           resolve(answers);
         }
       });
@@ -79,7 +80,7 @@ function Question(id, text, questioner, date) {
         if (err)
           reject(err);
         else {
-          const answers = rows.map(row => new Answer(row.text, row.respondent, row.score, dayjs(row.date)));
+          const answers = rows.map(row => new Answer(row.id, row.text, row.respondent, row.score, dayjs(row.date)));
           resolve(answers);
         }
       });
@@ -94,7 +95,7 @@ function Question(id, text, questioner, date) {
         if (err)
           reject(err);
         else {
-          const answers = rows.map(row => new Answer(row.text, row.respondent, row.score, dayjs(row.date)));
+          const answers = rows.map(row => new Answer(row.id, row.text, row.respondent, row.score, dayjs(row.date)));
           resolve(answers);
         }
       });
@@ -109,7 +110,7 @@ function Question(id, text, questioner, date) {
         if (err)
           reject(err);
         else {
-          const answers = rows.map(row => new Answer(row.text, row.respondent, row.score, dayjs(row.date)));
+          const answers = rows.map(row => new Answer(row.id, row.text, row.respondent, row.score, dayjs(row.date)));
           resolve(answers);
         }
       });
@@ -138,17 +139,19 @@ function Question(id, text, questioner, date) {
 
 }
 
-const ans1 = new Answer('for of', 'Alice', 3, dayjs('2023-03-06'));
-const ans2 = new Answer('for i=0,i<N,i++', 'Harry', 1, dayjs('2023-03-04'));
-const ans3 = new Answer('for in', 'Harry', -2, dayjs('2023-03-02'));
-const ans4 = new Answer('i=0 while(i<N)', 'Carol', -1, dayjs('2023-03-01'));
+const ans1 = new Answer(-1, 'for of', 'Alice', 3, dayjs('2023-03-06'));
+const ans2 = new Answer(-1, 'for i=0,i<N,i++', 'Harry', 1, dayjs('2023-03-04'));
+const ans3 = new Answer(-1, 'for in', 'Harry', -2, dayjs('2023-03-02'));
+const ans4 = new Answer(-1, 'i=0 while(i<N)', 'Carol', -1, dayjs('2023-03-01'));
 
 console.log(ans1.str());
 
 const q = new Question(1, 'Best way of enumerating an array in JS', 'Enrico', dayjs('2023-02-28'));
 
 async function load() {
-  await q.add(ans1);
+  let id;
+  id = await q.add(ans1);
+  console.log(id);
   await q.add(ans2);
   await q.add(ans3);
   await q.add(ans4);
