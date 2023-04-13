@@ -46,13 +46,25 @@ function MyRow(props) {
       <td>{e.text}</td>
       <td>{e.respondent}</td>
       <td>{e.score}</td>
-      <td><Button variant="primary">Vote</Button></td>
+      <td><Button variant="primary" onClick={() => { props.increaseScore(e.id) }}>Vote</Button></td>
     </tr>
   );
 }
 
 function MyTable(props) {
   const [list, setList] = useState(props.listOfAnswers);
+
+  function increaseScore(id) {
+    //console.log('increase score id: '+id);
+    setList((oldList) => oldList.map((e) => {
+      if (e.id === id) {
+        return Object.assign({}, e, { score: e.score + 1 });
+      } else {
+        return e;
+      }
+    })
+    )
+  }
 
   return (
     <Table>
@@ -68,7 +80,7 @@ function MyTable(props) {
       </thead>
       <tbody>
         {list.map((e) =>
-          <MyRow e={e} key={e.id} /> )
+          <MyRow e={e} key={e.id} increaseScore={increaseScore} />)
         }
         <tr>
           <td><Form.Control type="date" name="date" /></td>
