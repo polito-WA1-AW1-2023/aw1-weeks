@@ -46,7 +46,8 @@ function MyRow(props) {
       <td>{e.text}</td>
       <td>{e.respondent}</td>
       <td>{e.score}</td>
-      <td><Button variant="primary" onClick={() => { props.increaseScore(e.id) }}>Vote</Button></td>
+      <td><Button variant="primary" onClick={props.increaseScore}>Vote</Button>
+      <Button variant="danger" onClick={props.deleteRow}>Delete</Button></td>
     </tr>
   );
 }
@@ -66,6 +67,12 @@ function MyTable(props) {
     )
   }
 
+  const deleteRow = (id) => {
+    setList( (oldList) => oldList.filter(
+      (e) => e.id!==id
+    ));
+  }
+
   return (
     <Table>
       {/* <Table striped bordered hover> */}
@@ -80,7 +87,8 @@ function MyTable(props) {
       </thead>
       <tbody>
         {list.map((e) =>
-          <MyRow e={e} key={e.id} increaseScore={increaseScore} />)
+          <MyRow e={e} key={e.id} increaseScore={()=>increaseScore(e.id)}
+            deleteRow={()=>deleteRow(e.id)} />)
         }
         <tr>
           <td><Form.Control type="date" name="date" /></td>
