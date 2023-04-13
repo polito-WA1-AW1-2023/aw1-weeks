@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, Form, Table } from 'react-bootstrap';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 //import './App.css';
 
@@ -51,6 +52,8 @@ function MyRow(props) {
 }
 
 function MyTable(props) {
+  const [list, setList] = useState(props.listOfAnswers);
+
   return (
     <Table>
       {/* <Table striped bordered hover> */}
@@ -64,8 +67,8 @@ function MyTable(props) {
         </tr>
       </thead>
       <tbody>
-        {props.listOfAnswers.map((e, index) =>
-          <MyRow e={e} key={index} /> )
+        {list.map((e) =>
+          <MyRow e={e} key={e.id} /> )
         }
         <tr>
           <td><Form.Control type="date" name="date" /></td>
