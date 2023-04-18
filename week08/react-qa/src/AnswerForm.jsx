@@ -3,10 +3,10 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 
 function AnswerForm(props) {
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [text, setText] = useState('');
     const [respondent, setRespondent] = useState('');
-    const [score, setScore] = useState('');
+    const [score, setScore] = useState(0);
 
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -29,6 +29,9 @@ function AnswerForm(props) {
             setErrorMsg('Data non valida');
         else if (isNaN(parseInt(score)))
             setErrorMsg('Score non valido');
+        else if (parseInt(score)<0) {
+            setErrorMsg('Score negativo non valido');
+        }
         else {
             const e = {
                 text: text,
@@ -37,6 +40,7 @@ function AnswerForm(props) {
                 date: dayjs(date)
             }
             console.log(e);
+            props.addToList(e);
         }
     }
 
@@ -65,6 +69,7 @@ function AnswerForm(props) {
             </Form.Group>
 
             <Button type='submit' variant="primary">Add</Button>
+            <Button variant='warning' onClick={props.closeForm}>Cancel</Button>
         </Form>
         </>
     );

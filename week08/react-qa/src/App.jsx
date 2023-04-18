@@ -56,6 +56,8 @@ function MyRow(props) {
 function MyTable(props) {
   const [list, setList] = useState(props.listOfAnswers);
 
+  const [showForm, setShowForm] = useState(false);
+
   function increaseScore(id) {
     //console.log('increase score id: '+id);
     setList((oldList) => oldList.map((e) => {
@@ -74,6 +76,10 @@ function MyTable(props) {
     ));
   }
 
+  const addToList = (e) => {
+    setList( (oldList) => [...oldList, e] );
+  }
+
   return (
     <div>
     <Table>
@@ -88,13 +94,14 @@ function MyTable(props) {
         </tr>
       </thead>
       <tbody>
-        {list.map((e) =>
-          <MyRow e={e} key={e.id} increaseScore={()=>increaseScore(e.id)}
+        {list.map((e,i) =>
+          <MyRow e={e} key={i} increaseScore={()=>increaseScore(e.id)}
             deleteRow={()=>deleteRow(e.id)} />)
         }
       </tbody>
     </Table>
-    <AnswerForm />
+    {showForm? <AnswerForm addToList={addToList} closeForm={()=>setShowForm(false)} />
+     : <Button onClick={()=>setShowForm(true)}>Add element</Button>}
     </div>
   )
 }
