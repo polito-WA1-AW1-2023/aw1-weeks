@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, Form, Table } from 'react-bootstrap';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import AnswerForm from './AnswerForm';
 //import './App.css';
 
 
@@ -74,6 +75,7 @@ function MyTable(props) {
   }
 
   return (
+    <div>
     <Table>
       {/* <Table striped bordered hover> */}
       <thead>
@@ -90,15 +92,10 @@ function MyTable(props) {
           <MyRow e={e} key={e.id} increaseScore={()=>increaseScore(e.id)}
             deleteRow={()=>deleteRow(e.id)} />)
         }
-        <tr>
-          <td><Form.Control type="date" name="date" /></td>
-          <td><Form.Control type="text" name="text" /></td>
-          <td><Form.Control type="text" name="respondent" /></td>
-          <td><Form.Control className="w-25" type="text" name="score" /></td>
-          <td><Button variant="primary">+</Button> </td>
-        </tr>
       </tbody>
     </Table>
+    <AnswerForm />
+    </div>
   )
 }
 
