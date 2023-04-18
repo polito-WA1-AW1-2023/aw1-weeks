@@ -3,11 +3,20 @@ import { useState } from 'react';
 
 function AnswerForm(props) {
     const [text, setText] = useState('');
-    const [respondent, setRespondent] = useState('Enrico');
+    const [respondent, setRespondent] = useState('');
+    const [score, setScore] = useState('');
  
     function handleRespondent(event) {
         const v = event.target.value;
-        setRespondent(v.toUpperCase());
+        setRespondent(v);
+    }
+
+    const handleScore = (ev) => {
+        const v = ev.target.value;
+        if (v==='')
+            setScore('');
+        else if (!isNaN(parseInt(v)))
+            setScore(parseInt(v));
     }
 
     function handleSubmit(event) {
@@ -33,7 +42,7 @@ function AnswerForm(props) {
 
             <Form.Group>
                 <Form.Label>Score</Form.Label>
-                <Form.Control type="text" name="score" />
+                <Form.Control type="text" name="score" value={score} onChange={handleScore} />
             </Form.Group>
 
             <Button type='submit' variant="primary">Add</Button>
