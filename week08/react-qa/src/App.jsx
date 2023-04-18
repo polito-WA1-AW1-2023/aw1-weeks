@@ -48,6 +48,7 @@ function MyRow(props) {
       <td>{e.respondent}</td>
       <td>{e.score}</td>
       <td><Button variant="primary" onClick={props.increaseScore}>Vote</Button>
+      <Button variant="secondary" onClick={props.editRow} className='mx-2'>Edit</Button>
       <Button variant="danger" onClick={props.deleteRow}>Delete</Button></td>
     </tr>
   );
@@ -57,6 +58,8 @@ function MyTable(props) {
   const [list, setList] = useState(props.listOfAnswers);
 
   const [showForm, setShowForm] = useState(false);
+
+  const [editObj, setEditObj] = useState(undefined);  // state to keep the info about the object to edit
 
   function increaseScore(id) {
     //console.log('increase score id: '+id);
@@ -80,6 +83,18 @@ function MyTable(props) {
     setList( (oldList) => [...oldList, e] );
   }
 
+    const editRow = (newEl) => {
+      setList( (oldList) => oldList.map((e) => {
+        if (e.id === newEl.id) {
+          return newEl;
+        } else {
+          return e;
+        }
+      }));
+      setEditObj(undefined);
+      setShowForm(false);
+  }
+
   return (
     <div>
     <Table>
@@ -96,11 +111,19 @@ function MyTable(props) {
       <tbody>
         {list.map((e,i) =>
           <MyRow e={e} key={i} increaseScore={()=>increaseScore(e.id)}
+            editRow={() => { setEditObj(e); setShowForm(true);} }
             deleteRow={()=>deleteRow(e.id)} />)
         }
       </tbody>
     </Table>
-    {showForm? <AnswerForm addToList={addToList} closeForm={()=>setShowForm(false)} />
+    {/* key is needed because when the key value changes, the component is re-created
+        so the component state is re-initialized with the values of the new object.
+        This can happen when pressing edit on one and then another element without closing the form.
+     */}
+    {showForm? 
+      <AnswerForm addToList={addToList}  key={editObj? editObj.id : -1}
+        closeForm={()=>{setShowForm(false); setEditObj(undefined);} } 
+        editObj={editObj} editRow={editRow} />
      : <Button onClick={()=>setShowForm(true)}>Add element</Button>}
     </div>
   )
