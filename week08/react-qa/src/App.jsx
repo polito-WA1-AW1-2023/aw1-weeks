@@ -48,8 +48,8 @@ function MyRow(props) {
       <td>{e.respondent}</td>
       <td>{e.score}</td>
       <td><Button variant="primary" onClick={props.increaseScore}>Vote</Button>
-      <Button variant="secondary" onClick={props.editRow} className='mx-2'>Edit</Button>
-      <Button variant="danger" onClick={props.deleteRow}>Delete</Button></td>
+        <Button variant="secondary" onClick={props.editRow} className='mx-2'>Edit</Button>
+        <Button variant="danger" onClick={props.deleteRow}>Delete</Button></td>
     </tr>
   );
 }
@@ -74,57 +74,58 @@ function MyTable(props) {
   }
 
   const deleteRow = (id) => {
-    setList( (oldList) => oldList.filter(
-      (e) => e.id!==id
+    setList((oldList) => oldList.filter(
+      (e) => e.id !== id
     ));
   }
 
   const addToList = (e) => {
-    setList( (oldList) => [...oldList, e] );
+    setList((oldList) => [...oldList, e]);
+    setShowForm(false);
   }
 
-    const editRow = (newEl) => {
-      setList( (oldList) => oldList.map((e) => {
-        if (e.id === newEl.id) {
-          return newEl;
-        } else {
-          return e;
-        }
-      }));
-      setEditObj(undefined);
-      setShowForm(false);
+  const editRow = (newEl) => {
+    setList((oldList) => oldList.map((e) => {
+      if (e.id === newEl.id) {
+        return newEl;
+      } else {
+        return e;
+      }
+    }));
+    setEditObj(undefined);
+    setShowForm(false);
   }
 
   return (
     <div>
-    <Table>
-      {/* <Table striped bordered hover> */}
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Text</th>
-          <th>Author</th>
-          <th>Score</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {list.map((e,i) =>
-          <MyRow e={e} key={i} increaseScore={()=>increaseScore(e.id)}
-            editRow={() => { setEditObj(e); setShowForm(true);} }
-            deleteRow={()=>deleteRow(e.id)} />)
-        }
-      </tbody>
-    </Table>
-    {/* key is needed because when the key value changes, the component is re-created
+      <Table>
+        {/* <Table striped bordered hover> */}
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Text</th>
+            <th>Author</th>
+            <th>Score</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.map((e, i) =>
+            <MyRow e={e} key={i} increaseScore={() => increaseScore(e.id)}
+              editRow={() => { setEditObj(e); setShowForm(true); }}
+              deleteRow={() => deleteRow(e.id)} />)
+          }
+        </tbody>
+      </Table>
+      {/* key is needed because when the key value changes, the component is re-created
         so the component state is re-initialized with the values of the new object.
         This can happen when pressing edit on one and then another element without closing the form.
      */}
-    {showForm? 
-      <AnswerForm addToList={addToList}  key={editObj? editObj.id : -1}
-        closeForm={()=>{setShowForm(false); setEditObj(undefined);} } 
-        editObj={editObj} editRow={editRow} />
-     : <Button onClick={()=>setShowForm(true)}>Add element</Button>}
+      {showForm ?
+        <AnswerForm addToList={addToList} key={editObj ? editObj.id : -1}
+          closeForm={() => { setShowForm(false); setEditObj(undefined); }}
+          editObj={editObj} editRow={editRow} />
+        : <Button onClick={() => setShowForm(true)}>Add element</Button>}
     </div>
   )
 }
