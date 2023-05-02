@@ -3,16 +3,19 @@ import LanguageContext from './LanguageContext';
 import translations from './Translations';
 
 function MyButton(props) {
-    const language = useContext(LanguageContext);
+    const obj = useContext(LanguageContext);
+    const language = obj.lang;
+    const toggleLanguage = obj.toggleLanguage;
     return (
-        <button onClick={props.toggleLanguage}>
+        <button onClick={toggleLanguage}>
             {translations[language]['button']}
         </button>
     );
 }
 
 function Welcome() {
-    const language = useContext(LanguageContext);
+    const obj = useContext(LanguageContext);
+    const language = obj.lang;
     return (
         <p> {translations[language]['welcome']} </p>
     );

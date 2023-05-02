@@ -11,9 +11,9 @@ function App() {
 
   return (
     <div className="App">
-      <LanguageContext.Provider value={language}>
+      <LanguageContext.Provider value={{lang: language, toggleLanguage: toggleLanguage}}>
         <Welcome />
-        <MyButton toggleLanguage={toggleLanguage} />
+        <MyButton />
       </LanguageContext.Provider>
     </div>
   );
