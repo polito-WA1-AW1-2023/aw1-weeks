@@ -1,8 +1,23 @@
 import { Col, Container, Row, Button, Form, Table, Alert } from 'react-bootstrap';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import NavHeader from './NavbarComponents';
+
+function FormRoute(props) {
+    return (
+        <>
+            <NavHeader />
+            <Container fluid>
+                <AnswerForm answerList={props.answerList} addAnswer={props.addAnswer}
+                    editAnswer={props.editAnswer} />
+            </Container>
+        </>
+    );
+}
 
 function AnswerForm(props) {
+    const navigate = useNavigate();
 
     const [date, setDate] = useState(props.objToEdit? props.objToEdit.date.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'));  //string: dayjs object is created only on submit
     const [text, setText] = useState(props.objToEdit? props.objToEdit.text : '');
@@ -47,6 +62,7 @@ function AnswerForm(props) {
                 props.editAnswer(e);
             } else
                 props.addAnswer(e);
+            navigate('/');
         }
     }
 
@@ -75,14 +91,16 @@ function AnswerForm(props) {
             </Form.Group>
 
             <Button type='submit' variant="primary">{props.objToEdit? 'Save' : 'Add'}</Button> 
-            <Button className='mx-2' variant='danger' onClick={props.closeForm}>Cancel</Button>
+            <Link to='/'>
+                <Button className='mx-2' variant='danger'>Cancel</Button>
+            </Link>
         </Form>
         </>
     );
 
 }
 
-export default AnswerForm;
+export { AnswerForm, FormRoute };
 
 
 

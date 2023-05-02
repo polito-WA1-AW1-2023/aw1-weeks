@@ -1,7 +1,8 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Button, Table, Row, Col } from 'react-bootstrap';
 import { useState } from 'react';
-import AnswerForm from './AnswerForm';
+import { Link } from 'react-router-dom';
+import { AnswerForm } from './AnswerForm';
 
 function AnswerRow(props) {
   const { e } = props;
@@ -20,7 +21,6 @@ function AnswerRow(props) {
 
 function MainAnswers(props) {
 
-  const [showForm, setShowForm] = useState(false);  // local state (form visibility), does not need to be in App
   const [objToEdit, setObjToEdit] = useState(undefined);  // state to keep the info about the object to edit
 
   const [sortOrder, setSortOrder] = useState('none');  // local state for visualization only, does not need to change the list in App
@@ -61,7 +61,7 @@ function MainAnswers(props) {
             <tbody>
               {sortedAnswers.map((e) =>
                 <AnswerRow e={e} key={e.id} increaseScore={() => props.increaseScore(e.id)}
-                  editAnswer={() => { setObjToEdit(e); setShowForm(true); }}
+                  editAnswer={() => { setObjToEdit(e); }}
                   deleteAnswer={() => props.deleteAnswer(e.id)} />)
               }
             </tbody>
@@ -69,22 +69,12 @@ function MainAnswers(props) {
         </Col>
       </Row>
       <Row>
-        <Col>
-          {/* key is needed because when the key value changes, the component is re-created
-              so the component state is re-initialized with the values of the new object.
-              This can happen when pressing edit on one and then another element without closing the form.
-          */}
-          {showForm ?
-            <AnswerForm key={objToEdit ? objToEdit.id : -1}
-              addAnswer={(e) => { props.addAnswer(e); setShowForm(false); }}
-              closeForm={() => { setShowForm(false); setObjToEdit(undefined); }}
-              objToEdit={objToEdit}
-              editAnswer={(e) => { props.editAnswer(e); setShowForm(false); setObjToEdit(undefined); }} />
-            : <Button onClick={() => setShowForm(true)}>Add answer</Button>}
+        <Col>          
+          <Link to='/add'><Button>Add (link)</Button></Link>
         </Col>
       </Row>
     </>
   )
 }
 
-export { MainAnswers };
+export { MainAnswers, AnswerRow };

@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, Form, Table } from 'react-bootstrap';
 import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { MainAnswers } from './components/AnswerComponents';
-import NavHeader from './components/NavbarComponents';
-import QuestionDescription from './components/QuestionComponents';
+import AnswerRoute from './components/AnswerRoute';
+import { FormRoute } from './components/AnswerForm';
 //import './App.css';
 
 function Question(id, text, author, date) {
@@ -85,15 +85,17 @@ function App() {
 
 
   return (
-    <>
-      <NavHeader />
-      <Container fluid>
-        <QuestionDescription question={question} />
-        <MainAnswers answerList={answerList} increaseScore={increaseScore}
-          deleteAnswer={deleteAnswer} addAnswer={addAnswer} editAnswer={editAnswer} />
-      </Container>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={ <AnswerRoute question={question} answerList={answerList}
+          increaseScore={increaseScore} addAnswer={addAnswer} deleteAnswer={deleteAnswer}
+          editAnswer={editAnswer} /> } />
+        <Route path='/add' element={ <FormRoute addAnswer={addAnswer} /> } />
+        {/* <Route path='/edit/:id' element={ <FormRoute ... /> } /> */}
+      </Routes>
+    </BrowserRouter>
   )
 }
+
 
 export default App
