@@ -1,6 +1,6 @@
 import { Col, Container, Row, Button, Form, Table, Alert } from 'react-bootstrap';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import NavHeader from './NavbarComponents';
 
@@ -19,10 +19,19 @@ function FormRoute(props) {
 function AnswerForm(props) {
     const navigate = useNavigate();
 
-    const [date, setDate] = useState(props.objToEdit? props.objToEdit.date.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'));  //string: dayjs object is created only on submit
-    const [text, setText] = useState(props.objToEdit? props.objToEdit.text : '');
-    const [respondent, setRespondent] = useState(props.objToEdit? props.objToEdit.respondent : '');
-    const [score, setScore] = useState(props.objToEdit? props.objToEdit.score : 0);
+        /* If we have an answerId in the URL, we retrieve the answer to edit from the list.
+       In a full-stack application, starting from the answerId, 
+       we could query the back-end to retrieve all the answer data (updated to last value). */
+       
+       const { answerId } = useParams();
+       //console.log(answerId);
+       const objToEdit = answerId && props.answerList.find(e => e.id === parseInt(answerId));
+       //console.log(objToEdit);
+       
+    const [date, setDate] = useState(objToEdit ? objToEdit.date.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'));  //string: dayjs object is created only on submit
+    const [text, setText] = useState(objToEdit ? objToEdit.text : '');
+    const [respondent, setRespondent] = useState(objToEdit ? objToEdit.respondent : '');
+    const [score, setScore] = useState(objToEdit ? objToEdit.score : 0);
 
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -57,8 +66,8 @@ function AnswerForm(props) {
             }
             //console.log(e);
 
-            if (props.objToEdit) {  // decide if this is an edit or an add
-                e.id = props.objToEdit.id;
+            if (objToEdit) {  // decide if this is an edit or an add
+                e.id = objToEdit.id;
                 props.editAnswer(e);
             } else
                 props.addAnswer(e);
@@ -91,6 +100,8 @@ function AnswerForm(props) {
             </Form.Group>
 
             <Button type='submit' variant="primary">{props.objToEdit? 'Save' : 'Add'}</Button> 
+            {/* alternative
+            <Button className='mx-2' variant='danger' onClick={()=>navigate('/')}>Cancel</Button> */}
             <Link to='/'>
                 <Button className='mx-2' variant='danger'>Cancel</Button>
             </Link>

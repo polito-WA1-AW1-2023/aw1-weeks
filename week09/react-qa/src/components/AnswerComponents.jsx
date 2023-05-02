@@ -1,7 +1,7 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Button, Table, Row, Col } from 'react-bootstrap';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnswerForm } from './AnswerForm';
 
 function AnswerRow(props) {
@@ -13,7 +13,9 @@ function AnswerRow(props) {
       <td>{e.respondent}</td>
       <td>{e.score}</td>
       <td><Button variant="primary" onClick={props.increaseScore}><i className='bi bi-arrow-up-circle' /></Button>
-        <Button variant='secondary' onClick={props.editAnswer} className='mx-2'><i className='bi bi-pencil-square' /></Button>
+        <Link to={`/edit/${e.id}`}>
+          <Button variant='secondary' className='mx-2'><i className='bi bi-pencil-square' /></Button>
+        </Link>
         <Button variant="danger" onClick={props.deleteAnswer}><i className='bi bi-trash' /></Button></td>
     </tr>
   );
@@ -61,7 +63,7 @@ function MainAnswers(props) {
             <tbody>
               {sortedAnswers.map((e) =>
                 <AnswerRow e={e} key={e.id} increaseScore={() => props.increaseScore(e.id)}
-                  editAnswer={() => { setObjToEdit(e); }}
+                  editAnswer={() => { setObjToEdit(e); setShowForm(true); }}
                   deleteAnswer={() => props.deleteAnswer(e.id)} />)
               }
             </tbody>
@@ -70,7 +72,9 @@ function MainAnswers(props) {
       </Row>
       <Row>
         <Col>          
-          <Link to='/add'><Button>Add (link)</Button></Link>
+          <Link to='/add'>
+            <Button variant='success'>Add answer</Button>
+          </Link>
         </Col>
       </Row>
     </>

@@ -37,7 +37,15 @@ const staticAnswerList = [
 ];
 
 
-
+function DefaultRoute() {
+  return(
+    <Container className='App'>
+      <h1>No data here...</h1>
+      <h2>This is not the route you are looking for!</h2>
+      <Link to='/'>Please go back to main page</Link>
+    </Container>
+  );
+}
 function App() {
   const [question, setQuestion] = useState(staticQuestionList[0]);
   const [answerList, setAnswerList] = useState(staticAnswerList);
@@ -91,7 +99,9 @@ function App() {
           increaseScore={increaseScore} addAnswer={addAnswer} deleteAnswer={deleteAnswer}
           editAnswer={editAnswer} /> } />
         <Route path='/add' element={ <FormRoute addAnswer={addAnswer} /> } />
-        {/* <Route path='/edit/:id' element={ <FormRoute ... /> } /> */}
+        <Route path='/edit/:answerId' element={<FormRoute answerList={answerList}
+          addAnswer={addAnswer} editAnswer={editAnswer} />} />
+        <Route path='/*' element={<DefaultRoute />} />
       </Routes>
     </BrowserRouter>
   )
