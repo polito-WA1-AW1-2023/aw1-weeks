@@ -141,12 +141,32 @@ exports.createAnswer = (answer) => {
 
 // update an existing answer
 exports.updateAnswer = (answer) => {
-	// TO BE FILLED
+  console.log('updateAnswer: '+JSON.stringify(answer));
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE answers SET text=?, respondent=?, score=?, date=DATE(?) WHERE id = ?';
+    db.run(sql, [answer.text, answer.respondent, answer.score, answer.date, answer.id], function (err) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(this.changes);
+    });
+  });
 };
 
 // vote an existing answer
 exports.voteAnswer = (answerId, vote) => {
-	// TO BE FILLED
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE answers SET score= score + ?  WHERE id = ?';
+    const delta = vote==='upvote' ? 1 : -1;
+    db.run(sql, [delta, answerId], function (err) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(this.changes);
+    });
+  });
 };
 
 

@@ -51,13 +51,15 @@ Response body: An object, describing a single question.
 }
 ```
 
-### __Get all Answers to a given Question (by Id)__
+
+
+### __Get all Answers to a given Question (By Id)__
 
 URL: `/api/questions/<id>/answers`
 
 Method: GET
 
-Description:
+Description: Get all the answers associated to a given question identified by the id `<id>`.
 
 Request body: _None_
 
@@ -69,12 +71,45 @@ Response body: An array of objects, each describing an answer.
     "id": 1,
     "text": "for of",
     "respondent": "Alice",
-    "date": "2023-02-28",
-    "score":3,
-    "questionId":1
+    "score": 3,
+    "date": "2023-03-07",
+    "questionId": 1
+},
+{
+    "id": 5,
+    "text": "for i=0,i<N,i++",
+    "respondent": "Harry",
+    "score": 1,
+    "date": "2023-03-04",
+    "questionId": 1
 },
 ...
 ]
+```
+
+
+### __Get an Answer (By Id)__
+
+URL: `/api/answers/<id>`
+
+Method: GET
+
+Description: Get the answer identified by the id `<id>`.
+
+Request body: _None_
+
+Response: `200 OK` (success), `404 Not Found` (wrong id), or `500 Internal Server Error` (generic error).
+
+Response body: An object, describing a single answer.
+```
+{
+    "id": 1,
+    "text": "for of",
+    "respondent": "Alice",
+    "score": 3,
+    "date": "2023-03-07",
+    "questionId": 1
+}
 ```
 
 ### __Add a New Answer__
@@ -110,3 +145,63 @@ Response body: An object representing the inserted answer, notably with the newl
 }
 ```
 
+
+### __Update an Answer__
+
+URL: `/api/answers/<id>`
+
+Method: PUT
+
+Description: Update entirely an existing answer, identified by its id.
+
+Request body: An object representing the entire answer (Content-Type: `application/json`).
+```
+{
+    "id": 1,
+    "text": "for of",
+    "respondent": "Alice",
+    "score": 3,
+    "date": "2023-03-07",
+    "questionId": 1
+}
+```
+
+Response: `200 OK` (success) or `503 Service Unavailable` (generic error). If the request body is not valid, `422 Unprocessable Entity` (validation error).
+
+Response body: _None_
+
+
+### __Vote an Answer__
+
+URL: `/api/answers/<id>/vote`
+
+Method: POST
+
+Description: Upvote or downvote an existing answer (i.e., increase or reduce its score by 1), the answer is identified by its id.
+
+Request body: An object representing the action, either upvote or downvote (Content-Type: `application/json`).  
+```
+{
+    "vote": "upvote"
+}
+```
+
+Response: `201 Created` (success) or `503 Service Unavailable` (generic error). If the request body is not valid, `422 Unprocessable Entity` (validation error).
+
+Response body: _None_
+
+
+
+### __Delete an Answer__
+
+URL: `/api/answers/<id>`
+
+Method: DELETE
+
+Description: Delete an existing answer, identified by its id.
+
+Request body: _None_
+
+Response: `204 No Content` (success) or `503 Service Unavailable` (generic error).
+
+Response body: _None_
