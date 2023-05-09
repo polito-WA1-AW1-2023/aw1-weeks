@@ -1,4 +1,19 @@
 GET http://localhost:3001/api/questions HTTP/1.1
 ###
-GET http://localhost:3001/api/questions/1
+GET http://localhost:3001/api/questions/ciao
+###
+GET http://localhost:3001/api/questions/3/answers
+###
+GET http://localhost:3001/api/questions/1/answers
+###
+POST http://localhost:3001/api/answers
+Content-Type: application/json
+
+{
+    "text": "prova",
+    "respondent": "Bob",
+    "score": 0,
+    "date": "2023-05-06",
+    "questionId":1
+}
 ###
