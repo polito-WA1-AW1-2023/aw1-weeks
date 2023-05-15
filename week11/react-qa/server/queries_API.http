@@ -1,0 +1,42 @@
+GET http://localhost:3001/api/questions HTTP/1.1
+###
+GET http://localhost:3001/api/questions/1
+###
+GET http://localhost:3001/api/answers
+###
+GET http://localhost:3001/api/answers/2
+###
+GET http://localhost:3001/api/questions/2/answers
+###
+GET http://localhost:3001/api/questions/1/answers
+###
+DELETE http://localhost:3001/api/answers/10
+###
+POST http://localhost:3001/api/answers
+Content-Type: application/json
+
+{
+    "text": "prova",
+    "respondent": "Bob",
+    "score": 0,
+    "date": "2023-05-06",
+    "questionId":1
+}
+###
+PUT http://localhost:3001/api/answers/11
+Content-Type: application/json
+
+{
+    "text": "prova2",
+    "respondent": "Bob",
+    "score": 950,
+    "date": "2023-05-06",
+    "questionId":1
+}
+###
+POST http://localhost:3001/api/answers/1/vote
+Content-Type: application/json
+
+{
+    "vote": "downvote"
+}
