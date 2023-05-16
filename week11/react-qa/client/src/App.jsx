@@ -1,10 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, Form, Table } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import dayjs from 'dayjs';
 import AnswerRoute from './components/AnswerRoute';
 import { FormRoute } from './components/AnswerForm';
+import API from './API';
 //import './App.css';
 
 function Question(id, text, author, date) {
@@ -25,6 +26,7 @@ function Answer(id, text, respondent, score, date, questionID) {
   this.str = function () { return `Answer ID ${id}: ${this.text} (by ${this.respondent}) on ${this.date.format('YYYY-MM-DD')}, score: ${this.score} [questionID: ${this.questionID}]` }
 }
 
+/*
 const staticQuestionList = [
   new Question(1, 'Best way of enumerating an array in JS?', 'Enrico', dayjs('2023-02-28')),
 ];
@@ -35,7 +37,7 @@ const staticAnswerList = [
   new Answer(3, 'for in', 'Harry', -2, dayjs('2023-03-02'), 1),
   new Answer(6, 'i=0 while(i<N)', 'Carol', -1, dayjs('2023-03-01'), 1),
 ];
-
+*/
 
 function DefaultRoute() {
   return(
@@ -47,8 +49,20 @@ function DefaultRoute() {
   );
 }
 function App() {
-  const [question, setQuestion] = useState(staticQuestionList[0]);
-  const [answerList, setAnswerList] = useState(staticAnswerList);
+  const [question, setQuestion] = useState({});
+  const [answerList, setAnswerList] = useState([]);
+
+  useEffect( () => {
+    const questionId = 1;
+    API.getQuestion(questionId)
+      .then((q) => setQuestion(q))
+      .catch((err) => console.log(err));
+
+    API.getAnswersByQuestionId(questionId)
+      .then((answerList) => setAnswerList(answerList))
+      .catch((err) => console.log(err));
+
+  }, []);
 
   function increaseScore(id) {
     //console.log('increase score id: '+id);
