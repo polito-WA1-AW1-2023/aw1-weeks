@@ -14,7 +14,9 @@ function AnswerRoute(props) {
       <>
         <NavHeader />
         <Container fluid>
-          {props.initialLoading ? <Loading /> :
+          {props.errorMsg? <Alert variant='danger' dismissible className='my-2' onClose={props.resetErrorMsg}>
+            {props.errorMsg}</Alert> : null}
+          {props.initialLoading ? <Loading /> : 
           <>
           <QuestionDescription question={props.question} />
           <MainAnswers answerList={props.answerList} increaseScore={props.increaseScore}

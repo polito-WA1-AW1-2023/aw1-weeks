@@ -23,12 +23,22 @@ function App() {
   const [answerList, setAnswerList] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [dirty, setDirty] = useState(true);
-
-  const questionId = 1;
+  const [errorMsg, setErrorMsg] = useState('');
 
   function handleError(err) {
     console.log(err);
+    let errMsg = 'Unkwnown error';
+    if (err.errors)
+      if (err.errors[0].msg)
+        errMsg = err.errors[0].msg;
+    else if (err.error)
+      errMsg = err.error;
+        
+    setErrorMsg(errMsg);
+    setTimeout(()=>setDirty(true), 2000);  // Fetch correct version from server, after a while
   }
+
+  const questionId = 1;
 
   useEffect( () => {
     API.getQuestion(questionId)
@@ -37,17 +47,16 @@ function App() {
   }, []);
 
   useEffect( () => {
-    if (dirty) {
-
-      API.getAnswersByQuestionId(questionId)
+    //console.log("dirty: "+dirty);
+    if (question.id && dirty) {
+      API.getAnswersByQuestionId(question.id)
         .then((answerList) => {
           setAnswerList(answerList);
-          setInitialLoading(false);
           setDirty(false);
+          setInitialLoading(false);
         })
         .catch((err) => handleError(err));
-      }
-
+    }
   }, [question.id, dirty]);
 
   function increaseScore(id) {
@@ -61,9 +70,7 @@ function App() {
     })
     );
     API.voteAnswer(id)
-      .then(() => {
-        setDirty(true);
-      })
+      .then(() => setDirty(true))
       .catch((err) => handleError(err));
   }
 
@@ -81,6 +88,9 @@ function App() {
   }
 
   const addAnswer = (e) => {
+    // REMEMBER to add questionId
+    e.questionId = question.id;
+
     setAnswerList((oldList) => {
       // Create a new temporary id, waiting for a truly unique id that can only be supplied by the server
       // This temporary id will be replaced when the server will provide its id.
@@ -88,27 +98,36 @@ function App() {
       // NB: Math.max: do not forget ... (spread), max does not take an array as parameter
       const newTempId = Math.max(...oldList.map((e) => e.id)) + 1;
       e.id = newTempId;
+      e.status = 'added';
       return [...oldList, e];
     }
     );
+    API.addAnswer(e)
+      .then(() => setDirty(true))
+      .catch((err) => handleError(err));
   }
+
 
   const editAnswer = (newEl) => {
     setAnswerList((oldList) => oldList.map((e) => {
       if (e.id === newEl.id) {
+        newEl.status = 'updated';
         return newEl;
       } else {
         return e;
       }
     }));
+    API.updateAnswer(newEl)
+      .then(() => setDirty(true))
+      .catch((err) => handleError(err));
   }
 
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={ <AnswerRoute initialLoading={initialLoading}
-          question={question} answerList={answerList}
+        <Route path='/' element={ <AnswerRoute errorMsg={errorMsg} resetErrorMsg={()=>setErrorMsg('')}
+          initialLoading={initialLoading} question={question} answerList={answerList}
           increaseScore={increaseScore} addAnswer={addAnswer} deleteAnswer={deleteAnswer}
           editAnswer={editAnswer} /> } />
         <Route path='/add' element={ <FormRoute addAnswer={addAnswer} /> } />
