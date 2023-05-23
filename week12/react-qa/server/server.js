@@ -33,7 +33,7 @@ app.get('/api/questions/:id', async (req, res) => {
     if(result.error)
       res.status(404).json(result);
     else
-      setTimeout(()=>res.json(result), answerDelay*2);
+      setTimeout(()=>res.json(result), answerDelay);
   } catch(err) {
     res.status(500).end();
   }

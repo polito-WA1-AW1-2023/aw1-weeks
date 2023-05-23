@@ -41,7 +41,93 @@ async function getAnswersByQuestionId(id) {
   }
 
 
+function voteAnswer(id) {
+  // call  POST /api/answers/<id>/vote
+  return new Promise((resolve, reject) => {
+    fetch(URL+`/answers/${id}/vote`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ vote: 'upvote' }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        // analyze the cause of error
+        response.json()
+          .then((message) => { reject(message); }) // error message in the response body
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
 
-//const API = {getAllQuestions, getQuestion, getAnswersByQuestionId, voteAnswer, addAnswer, deleteAnswer, updateAnswer};
-const API = {getAllQuestions, getQuestion, getAnswersByQuestionId};
+function addAnswer(answer) {
+  // call  POST /api/answers
+  return new Promise((resolve, reject) => {
+    fetch(URL+`/answers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(Object.assign({}, answer, {date: answer.date.format("YYYY-MM-DD")})),
+    }).then((response) => {
+      if (response.ok) {
+        response.json()
+          .then((id) => resolve(id))
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      } else {
+        // analyze the cause of error
+        response.json()
+          .then((message) => { reject(message); }) // error message in the response body
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+function deleteAnswer(id) {
+  // call  DELETE /api/answers/<id>
+  return new Promise((resolve, reject) => {
+    fetch(URL+`/answers/${id}`, {
+      method: 'DELETE',
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        // analyze the cause of error
+        response.json()
+          .then((message) => { reject(message); }) // error message in the response body
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+function updateAnswer(answer) {
+  // call  PUT /api/answers/<id>
+  return new Promise((resolve, reject) => {
+    fetch(URL+`/answers/${answer.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(Object.assign({}, answer, {date: answer.date.format("YYYY-MM-DD")})),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        // analyze the cause of error
+        response.json()
+          .then((message) => { reject(message); }) // error message in the response body
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+
+
+const API = {getAllQuestions, getQuestion, getAnswersByQuestionId, voteAnswer, addAnswer, deleteAnswer, updateAnswer};
 export default API;

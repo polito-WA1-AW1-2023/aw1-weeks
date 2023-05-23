@@ -22,39 +22,62 @@ function App() {
   const [question, setQuestion] = useState({});
   const [answerList, setAnswerList] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [dirty, setDirty] = useState(true);
 
   const questionId = 1;
+
+  function handleError(err) {
+    console.log(err);
+  }
 
   useEffect( () => {
     API.getQuestion(questionId)
       .then((q) => setQuestion(q))
-      .catch((err) => console.log(err));
-
-    API.getAnswersByQuestionId(questionId)
-      .then((answerList) => {
-        setAnswerList(answerList);
-        setInitialLoading(false);
-      })
-      .catch((err) => console.log(err));
-
+      .catch((err) => handleError(err));
   }, []);
+
+  useEffect( () => {
+    if (dirty) {
+
+      API.getAnswersByQuestionId(questionId)
+        .then((answerList) => {
+          setAnswerList(answerList);
+          setInitialLoading(false);
+          setDirty(false);
+        })
+        .catch((err) => handleError(err));
+      }
+
+  }, [question.id, dirty]);
 
   function increaseScore(id) {
     //console.log('increase score id: '+id);
     setAnswerList((oldList) => oldList.map((e) => {
       if (e.id === id) {
-        return Object.assign({}, e, { score: e.score + 1 });
+        return Object.assign({}, e, { score: e.score + 1, status: 'updated' });
       } else {
         return e;
       }
     })
-    )
+    );
+    API.voteAnswer(id)
+      .then(() => {
+        setDirty(true);
+      })
+      .catch((err) => handleError(err));
   }
 
   const deleteAnswer = (id) => {
-    setAnswerList((oldList) => oldList.filter(
+    /* setAnswerList((oldList) => oldList.filter(
       (e) => e.id !== id
     ));
+    */
+    setAnswerList((oldList) => oldList.map(
+      e => e.id !== id ? e : Object.assign({}, e, {status: 'deleted'})
+    ));
+    API.deleteAnswer(id)
+      .then(() => setDirty(true))
+      .catch((err) => handleError(err));
   }
 
   const addAnswer = (e) => {
