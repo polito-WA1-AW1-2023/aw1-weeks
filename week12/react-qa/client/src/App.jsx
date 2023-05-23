@@ -21,6 +21,7 @@ function DefaultRoute() {
 function App() {
   const [question, setQuestion] = useState({});
   const [answerList, setAnswerList] = useState([]);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const questionId = 1;
 
@@ -30,7 +31,10 @@ function App() {
       .catch((err) => console.log(err));
 
     API.getAnswersByQuestionId(questionId)
-      .then((answerList) => setAnswerList(answerList))
+      .then((answerList) => {
+        setAnswerList(answerList);
+        setInitialLoading(false);
+      })
       .catch((err) => console.log(err));
 
   }, []);
@@ -80,7 +84,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={ <AnswerRoute question={question} answerList={answerList}
+        <Route path='/' element={ <AnswerRoute initialLoading={initialLoading}
+          question={question} answerList={answerList}
           increaseScore={increaseScore} addAnswer={addAnswer} deleteAnswer={deleteAnswer}
           editAnswer={editAnswer} /> } />
         <Route path='/add' element={ <FormRoute addAnswer={addAnswer} /> } />

@@ -14,11 +14,13 @@ function AnswerRoute(props) {
       <>
         <NavHeader />
         <Container fluid>
+          {props.initialLoading ? <Loading /> :
           <>
           <QuestionDescription question={props.question} />
           <MainAnswers answerList={props.answerList} increaseScore={props.increaseScore}
             deleteAnswer={props.deleteAnswer} addAnswer={props.addAnswer} editAnswer={props.editAnswer} />
           </>
+          }
         </Container>
       </>
     );

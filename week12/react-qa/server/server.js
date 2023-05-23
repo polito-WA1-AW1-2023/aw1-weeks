@@ -33,7 +33,7 @@ app.get('/api/questions/:id', async (req, res) => {
     if(result.error)
       res.status(404).json(result);
     else
-      setTimeout(()=>res.json(result), answerDelay/2);
+      setTimeout(()=>res.json(result), answerDelay*2);
   } catch(err) {
     res.status(500).end();
   }
@@ -53,7 +53,7 @@ app.get('/api/questions/:id/answers', async (req, res) => {
       if (result.error)
         res.status(404).json(result);
       else
-        res.json(result);  // NB: list of answers can also be an empty array
+        setTimeout(()=>res.json(result), answerDelay);  // NB: list of answers can also be an empty array
     }
   } catch(err) {
     res.status(500).end();
