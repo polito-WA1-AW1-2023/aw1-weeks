@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, Form, Table } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import AnswerRoute from './components/AnswerRoute';
 import { FormRoute } from './components/AnswerForm';
-//import { LoginForm } from './components/AuthComponents';
+import { LoginForm } from './components/AuthComponents';
 import API from './API';
 //import './App.css';
 
@@ -25,6 +25,8 @@ function App() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [dirty, setDirty] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
+  const [user, setUser] = useState(undefined);
+  const [loggedIn, setLoggedIn] = useState(false);
 
 
   function handleError(err) {
@@ -41,6 +43,21 @@ function App() {
     setErrorMsg(errMsg);
     setTimeout(()=>setDirty(true), 2000);  // Fetch correct version from server, after a while
   }
+
+  useEffect(()=> {
+    const checkAuth = async() => {
+      try {
+        // here you have the user info, if already logged in
+        const user = await API.getUserInfo();
+        setLoggedIn(true);
+        setUser(user);
+      } catch(err) {
+        // NO need to do anything: user is simply not yet authenticated
+        //handleError(err);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const questionId = 1;
 
@@ -63,7 +80,19 @@ function App() {
     }
   }, [question.id, dirty]);
 
+  const doLogOut = async () => {
+    await API.logOut();
+    setLoggedIn(false);
+    setUser(undefined);
+    /* set state to empty if appropriate */
+  }
+  
 
+  const loginSuccessful = (user) => {
+    setUser(user);
+    setLoggedIn(true);
+    setDirty(true);  // load latest version of data, if appropriate
+  }
 
 
   function increaseScore(id) {
@@ -134,16 +163,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={ <AnswerRoute  
+        <Route path='/' element={ <AnswerRoute user={user} logout={doLogOut}
           errorMsg={errorMsg} resetErrorMsg={()=>setErrorMsg('')}
           initialLoading={initialLoading} question={question} answerList={answerList}
           increaseScore={increaseScore} addAnswer={addAnswer} deleteAnswer={deleteAnswer}
           editAnswer={editAnswer} /> } />
-        <Route path='/add' element={ <FormRoute 
+        <Route path='/add' element={ <FormRoute user={user} logout={doLogOut}
           addAnswer={addAnswer} /> } />
-        <Route path='/edit/:answerId' element={<FormRoute 
+        <Route path='/edit/:answerId' element={<FormRoute user={user} logout={doLogOut}
           answerList={answerList}
           addAnswer={addAnswer} editAnswer={editAnswer} />} />
+        <Route path='/login' element={loggedIn? <Navigate replace to='/' />:  <LoginForm loginSuccessful={loginSuccessful} />} />
         <Route path='/*' element={<DefaultRoute />} />
       </Routes>
     </BrowserRouter>
